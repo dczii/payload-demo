@@ -21,11 +21,43 @@ import {
 } from '@payloadcms/richtext-lexical'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { buildConfig } from 'payload'
+
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+const AttachmentsBlock = {
+  slug: 'attachments',
+  interfaceName: 'Attachments',
+  fields: [
+    // required
+    {
+      name: 'url',
+      type: 'text',
+      required: true,
+    },
+  ],
+}
+
+const RelatedSolutionsBlock = {
+  slug: 'related-solutions',
+  interfaceName: 'RelatedSolutinosBlock',
+  fields: [
+    // required
+    {
+      name: 'title',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'url',
+      type: 'text',
+      required: true,
+    },
+  ],
+}
 
 export default buildConfig({
   //editor: slateEditor({}),
@@ -47,22 +79,94 @@ export default buildConfig({
       },
       fields: [
         {
+          name: 'categories',
+          type: 'relationship',
+          relationTo: ['categories'],
+        },
+        {
+          name: 'sub-categories',
+          type: 'relationship',
+          relationTo: ['sub-categories'],
+          sortOptions: 'title',
+        },
+        {
           name: 'title',
           type: 'text',
         },
         {
-          name: 'content',
+          name: 'solution-title',
+          type: 'text',
+        },
+        {
+          name: 'overview',
           type: 'richText',
+        },
+        {
+          name: 'kal URL',
+          type: 'text',
+        },
+        {
+          name: 'attachments', // required
+          type: 'blocks', // required
+          minRows: 1,
+          maxRows: 3,
+          blocks: [
+            // required
+            AttachmentsBlock,
+          ],
+        },
+        {
+          name: 'related-solutions', // required
+          type: 'blocks', // required
+          minRows: 1,
+          maxRows: 4,
+          blocks: [
+            // required
+            RelatedSolutionsBlock,
+          ],
         },
       ],
     },
     {
-      slug: 'media',
-      upload: true,
+      slug: 'categories',
+      admin: {
+        useAsTitle: 'title',
+      },
       fields: [
         {
-          name: 'text',
+          name: 'title',
           type: 'text',
+          required: true,
+          unique: true,
+        },
+        // {
+        //   name: 'sub-category',
+        //   slug: 'sub-category',
+        //   type: 'blocks',
+        //   minRows: 0,
+        //   maxRows: 10,
+        //   blocks: [SubCategoryBlock],
+        // },
+      ],
+    },
+    {
+      slug: 'sub-categories',
+      admin: {
+        useAsTitle: 'sub-category-title',
+      },
+      fields: [
+        {
+          name: 'categories',
+          type: 'relationship',
+          relationTo: ['categories'],
+          sortOptions: 'title',
+          required: true,
+        },
+        {
+          name: 'sub-category-title',
+          type: 'text',
+          required: true,
+          unique: true,
         },
       ],
     },

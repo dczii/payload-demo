@@ -13,7 +13,8 @@ export interface Config {
   collections: {
     users: User;
     pages: Page;
-    media: Media;
+    categories: Category;
+    'sub-categories': SubCategory;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -67,8 +68,17 @@ export interface User {
  */
 export interface Page {
   id: string;
+  categories?: {
+    relationTo: 'categories';
+    value: string | Category;
+  } | null;
+  'sub-categories'?: {
+    relationTo: 'sub-categories';
+    value: string | SubCategory;
+  } | null;
   title?: string | null;
-  content?: {
+  'solution-title'?: string | null;
+  overview?: {
     root: {
       type: string;
       children: {
@@ -83,27 +93,56 @@ export interface Page {
     };
     [k: string]: unknown;
   } | null;
+  'kal URL'?: string | null;
+  attachments?: Attachments[] | null;
+  'related-solutions'?: RelatedSolutinosBlock[] | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "categories".
  */
-export interface Media {
+export interface Category {
   id: string;
-  text?: string | null;
+  title: string;
   updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sub-categories".
+ */
+export interface SubCategory {
+  id: string;
+  categories: {
+    relationTo: 'categories';
+    value: string | Category;
+  };
+  'sub-category-title': string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Attachments".
+ */
+export interface Attachments {
+  url: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'attachments';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RelatedSolutinosBlock".
+ */
+export interface RelatedSolutinosBlock {
+  title: string;
+  url: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'related-solutions';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
