@@ -20,7 +20,7 @@ import {
   UploadFeature,
 } from '@payloadcms/richtext-lexical'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { buildConfig } from 'payload'
+import { buildConfig, type Block } from 'payload'
 
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
@@ -28,7 +28,7 @@ import { fileURLToPath } from 'url'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const AttachmentsBlock = {
+const AttachmentsBlock: Block = {
   slug: 'attachments',
   interfaceName: 'Attachments',
   fields: [
@@ -41,7 +41,7 @@ const AttachmentsBlock = {
   ],
 }
 
-const RelatedSolutionsBlock = {
+const RelatedSolutionsBlock: Block = {
   slug: 'related-solutions',
   interfaceName: 'RelatedSolutinosBlock',
   fields: [
@@ -87,7 +87,6 @@ export default buildConfig({
           name: 'sub-categories',
           type: 'relationship',
           relationTo: ['sub-categories'],
-          sortOptions: 'title',
         },
         {
           name: 'title',
@@ -159,7 +158,6 @@ export default buildConfig({
           name: 'categories',
           type: 'relationship',
           relationTo: ['categories'],
-          sortOptions: 'title',
           required: true,
         },
         {
